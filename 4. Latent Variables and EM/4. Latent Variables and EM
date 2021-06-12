@@ -1,0 +1,58 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+%opening
+%\title{}
+%\author{}
+
+\begin{document}
+
+
+
+\section{Clustering}
+
+\paragraph{Clustering is the process of identifying 'similar' groups of data. The metric by which similarity is measured can vary, e.g. Euclidean distance, density, cosine similarity to name a few.} 
+
+\subsection{K-Means Clustering}
+
+Groups $N$ data points into $K$ clusters by Euclidean distance (l2 norm).
+
+\begin{algorithm}
+\caption{K-Means}\label{euclid}
+\begin{algorithmic}[1]
+\Procedure{Assign clusters}{}
+\BState \emph{For each $x_n$}:
+
+\State $\textit{r_nk} \gets \text{1: argmin_k ||x_n - \mu_k ||}$
+\State $i \gets \textit{patlen}$
+\BState \emph{top}:
+\If {$i > \textit{stringlen}$} \Return false
+\EndIf
+\State $j \gets \textit{patlen}$
+\BState \emph{loop}:
+\If {$\textit{string}(i) = \textit{path}(j)$}
+\State $j \gets j-1$.
+\State $i \gets i-1$.
+\State \textbf{goto} \emph{loop}.
+\State \textbf{close};
+\EndIf
+\State $i \gets i+\max(\textit{delta}_1(\textit{string}(i)),\textit{delta}_2(j))$.
+\State \textbf{goto} \emph{top}.
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+
+
+
+
+
+
+\begin{abstract}
+
+\end{abstract}
+
+\section{}
+
+\end{document}

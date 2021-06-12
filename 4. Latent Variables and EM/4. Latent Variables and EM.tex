@@ -1,0 +1,88 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+%opening
+%\title{}
+%\author{}
+
+\begin{document}
+
+
+
+\section{Intro - Clustering}
+
+\paragraph{Clustering is the process of identifying 'similar' groups of data. The metric by which similarity is measured can vary, e.g. Euclidean distance, density, cosine similarity (to name a few.)} 
+
+\subsection{K-Means Clustering}
+
+Groups $N$ data points into $K$ clusters by Euclidean distance (l2 norm).
+
+\begin{itemize}
+
+	\item Initialise $\mu_k$ randomly for all $k \in K$
+	\item For each $x_n$:
+	
+		\begin{itemize}
+			\item for $k = argmin_k ||x_n - \mu_k ||$, $r_{nk} = 1$  
+		\end{itemize}
+	
+		\item For each $k \in K$:
+		
+		\begin{itemize}
+			\item $\mu_k = \frac{\sum^N r_{nk} x_n}{\sum^N r_{nk}}$
+		\end{itemize}
+\end{itemize}
+
+
+\section{Gaussian Mixture Models}
+\subsection{Model definition}
+\paragraph{Imagine now that points could partially belong to multiple clusters; a soft assignment. The probability of observing data point $x_n$ in cluster $k$ is proportional to its assignment weighting.}
+
+One way to do this is to assume a Gaussian distribution for the points within each cluster, and a multinomial distribution for the clusters themselves. Using a generative process:
+
+\begin{enumerate}
+	\item First pick a cluster by rolling a dice (with parameter $\phi$)
+	\item Second generate a data point for this cluster based on its distribution (parameters $\mu_k$, $\Sigma_k$) 
+\end{enumerate}
+
+\begin{center}
+	$p(x_n, C_k) = \phi_k N(x_n ; \mu_k, \Sigma_k)$
+\end{center}
+
+\begin{itemize}
+	\item Because we do not know what cluster $x_n$ was actually generated from, we need to sum over the marginal probability to obtain the distribution. $C_k$ is, in effect, a 'latent' ('hidden') variable.
+	\item for convention sake let us denote $z_nk$ = $C_k$ for data point $x_n$
+	\item So our probability distribution becomes:
+
+	\begin{center}
+		$p(x_n) = \sum^K \phi_k N(x_n ; \mu_k, \Sigma_k)$
+	\end{center}
+	
+	\item The log likelihood is:
+	
+	\begin{center}
+		$ln (\mathcal{L}) = \sum^N ln \big( \sum^K \phi_k N(x_n ; \mu_k, \Sigma_k) \big)$
+	\end{center}
+	\item (note the sum inside the log; it makes solving a bit tougher having a latent variable)
+\end{itemize}
+
+\subsection{MLE Parameter Estimates}
+\begin{align}
+%\frac{\partial}{\partial \mu_k} \big( ln (\mathcal{L}) \big) = 0, \frac{\partial}{\partial \Sigma_k} \big( ln (\mathcal{L}) \big) = 0,
+%\frac{\partial}{\partial \phi_k} \big( ln (\mathcal{L}) \big) = 0 
+%\end{align}
+%\begin{align}
+\mu_k &= \frac{1}{N_k}\sum^k \gamma(z_{nk}) x_n \\
+\Sigma_k &= \frac{1}{N_k}\sum^k \gamma(z_{nk}) (x_n-\mu_k)(x_n-\mu_k)^T \\
+\phi_k &= \frac{N_k}{N}
+\end{align}
+
+where:
+
+\begin{align}
+N_k = \sum^N \gamma(z_{nk})
+\end{align}
+
+These all intuitively make sense for the MLE estimates; Considering $\gamma(z_{nk})$ as the portion of $x_n$ that belongs to cluster $k$. $\mu_k$ and $\Sigma_k$ estimates take this into account. $\phi_k$ is the relative fraction of each clusters mass.  
+
+
+\end{document}
