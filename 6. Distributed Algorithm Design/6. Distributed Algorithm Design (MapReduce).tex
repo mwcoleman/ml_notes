@@ -1,0 +1,74 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+%opening
+%\title{}
+%\author{}
+
+\begin{document}
+
+
+
+\section{Distributed Algorithm Design}
+
+\textnormal{We use a method called MapReduce to distribute a learning algorithm across multiple processors. It can be used for any learning algorithm that has a training objective summing over data points. In this case, the data set is split up into batches. "Map" refers to distributing a process across multiple processors, and "Reduce" refers to merging the results back together.}
+\subsection{MapReduce for Batch GD}
+\begin{enumerate}
+	\item Split data set $D$ into $D_1, D_2, .., D_m$
+	\item (Across multiple processors) Map:
+	\begin{itemize}
+		\item $temp_m := \sum_{x,t \in D_m} (t - w x)x$
+	\end{itemize}
+	\item{Reduce:}
+	\begin{itemize}
+		\item $w \leftarrow w + \eta (\sum^M temp_m)$
+	\end{itemize}
+\end{enumerate}
+
+\subsection{MapReduce for K-Means}
+\textnormal{Split data set $D$ into $D_1, D_2, .., D_m$ and randomly initialise $\mu$}
+\paragraph{Map:}
+\begin{enumerate}
+	\item set temporary variables $\hat \mu, \hat n = 0$
+	\item for $n \in 1:|D_m|$:
+	\begin{itemize}
+		\item $k* := argmin_k ||x_n-\mu_k||$
+		\item $\hat \mu_{k*,m} := \hat \mu_{k*,m}x$
+		\item $\hat n_{k*,m} := \hat n_{k*,m} + 1$
+	\end{itemize}
+\end{enumerate}
+\paragraph{Reduce:\\}
+\textnormal{for $k \in K$:}
+	\begin{itemize}
+		\item $\mu_k := \frac{ \sum^M \hat \mu_{k,m} } { \sum^M  \hat n_{k,m}}$
+	\end{itemize}
+
+\newpage
+\subsection{MapReduce for GMM}
+
+	\textnormal{Split data set $D$ into $D_1, D_2, .., D_m$ and initialise $\mu, \Sigma, \phi$\\}
+	\paragraph{Map:}
+	\begin{itemize}
+		\item set temporary variables $\hat \mu, \hat \Sigma, \hat N = 0$
+		\item for $n \in 1:|D_m|$:
+		\begin{itemize}
+			\item For $k \in K$:
+			\begin{itemize}
+				\item $\gamma(Z_{nk}) = \frac{ \phi_k N(x_n;\theta_k)}{ \sum^J \phi_j N(x_n ; \theta_j) }$
+				\item $\hat \mu_{k,m} := \hat \mu_{k,m} + \gamma(Z_{nk})x_n$
+				\item $\hat \Sigma_{k,m} := \hat \Sigma_{k,m} + \gamma(Z_{nk})x_n\cdot x_n^T$
+				\item $\hat N_{k,m} := \hat N_{k,m} + \gamma(Z_{nk})$
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+	\paragraph{Reduce:}
+		\begin{itemize}
+			\item For $k \in K$:
+			\begin{itemize}
+				\item $\mu_k := \frac{ \sum^M \hat \mu_{k,m} } { \sum^M  \hat n_{k,m}}$
+				\item $\Sigma_k := \frac{ \sum^M \hat \Sigma_{k,m} } { \sum^M  \hat n_{k,m}} - \mu_k \cdot \mu_k^T$
+				\item $\mu_k := \frac{ \sum^M \hat \mu_{k,m} } { \sum^M  \hat n_{k,m}}$
+			\end{itemize}
+	\end{itemize}
+
+
+\end{document}
